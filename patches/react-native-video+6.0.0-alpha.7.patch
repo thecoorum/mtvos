@@ -1,0 +1,79 @@
+diff --git a/node_modules/react-native-video/ios/Video/Features/RCTPlayerOperations.swift b/node_modules/react-native-video/ios/Video/Features/RCTPlayerOperations.swift
+index a615644..93d490a 100644
+--- a/node_modules/react-native-video/ios/Video/Features/RCTPlayerOperations.swift
++++ b/node_modules/react-native-video/ios/Video/Features/RCTPlayerOperations.swift
+@@ -112,7 +112,7 @@ enum RCTPlayerOperations {
+                 }
+             }
+         } else { // default. invalid type or "system"
+-            #if TARGET_OS_TV
++            #if os(tvOS)
+                 // Do noting. Fix for tvOS native audio menu language selector
+             #else
+                 player?.currentItem?.selectMediaOptionAutomatically(in: group)
+@@ -120,7 +120,7 @@ enum RCTPlayerOperations {
+             #endif
+         }
+         
+-        #if TARGET_OS_TV
++        #if os(tvOS)
+             // Do noting. Fix for tvOS native audio menu language selector
+         #else
+             // If a match isn't found, option will be nil and text tracks will be disabled
+@@ -213,6 +213,7 @@ enum RCTPlayerOperations {
+                 try audioSession.setCategory(category, options: options)
+             } catch {
+                 debugPrint("[RCTPlayerOperations] Problem setting up AVAudioSession category and options. Error: \(error).")
++                #if !os(tvOS)
+                 // Handle specific set category and option combination error
+                 // setCategory:AVAudioSessionCategoryPlayback withOptions:mixWithOthers || duckOthers
+                 // Failed to set category, error: 'what' Error Domain=NSOSStatusErrorDomain
+@@ -225,6 +226,7 @@ enum RCTPlayerOperations {
+                         debugPrint("[RCTPlayerOperations] Reseting AVAudioSession category and options problem. Error: \(error).")
+                     }
+                 }
++                #endif
+             }
+         } else if let category = category, options == nil {
+             do {
+diff --git a/node_modules/react-native-video/ios/Video/RCTVideo.swift b/node_modules/react-native-video/ios/Video/RCTVideo.swift
+index f341fc5..c1dc41e 100644
+--- a/node_modules/react-native-video/ios/Video/RCTVideo.swift
++++ b/node_modules/react-native-video/ios/Video/RCTVideo.swift
+@@ -577,7 +577,7 @@ class RCTVideo: UIView, RCTVideoPlayerViewControllerDelegate, RCTPlayerObserverH
+             _player?.isMuted = false
+         }
+ 
+-        if #available(iOS 12.0, *) {
++        if #available(iOS 12.0, tvOS 12.0, *) {
+             _player?.preventsDisplaySleepDuringVideoPlayback = _preventsDisplaySleepDuringVideoPlayback
+         } else {
+             // Fallback on earlier versions
+diff --git a/node_modules/react-native-video/ios/Video/RCTVideoPlayerViewController.swift b/node_modules/react-native-video/ios/Video/RCTVideoPlayerViewController.swift
+index 1abbc38..5d74c69 100644
+--- a/node_modules/react-native-video/ios/Video/RCTVideoPlayerViewController.swift
++++ b/node_modules/react-native-video/ios/Video/RCTVideoPlayerViewController.swift
+@@ -24,7 +24,7 @@ class RCTVideoPlayerViewController: AVPlayerViewController {
+         rctDelegate?.videoPlayerViewControllerDidDismiss(playerViewController: self)
+     }
+ 
+-    #if !TARGET_OS_TV
++    #if !os(tvOS)
+ 
+     func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+         return .all
+diff --git a/node_modules/react-native-video/react-native-video.podspec b/node_modules/react-native-video/react-native-video.podspec
+index 45710b3..49de62a 100644
+--- a/node_modules/react-native-video/react-native-video.podspec
++++ b/node_modules/react-native-video/react-native-video.podspec
+@@ -12,8 +12,8 @@ Pod::Spec.new do |s|
+   s.homepage       = 'https://github.com/react-native-video/react-native-video'
+   s.source       = { :git => "https://github.com/react-native-video/react-native-video.git", :tag => "v#{s.version}" }
+ 
+-  s.ios.deployment_target = "9.0"
+-  s.tvos.deployment_target = "9.0"
++  s.ios.deployment_target = "10.0"
++  s.tvos.deployment_target = "10.0"
+ 
+   s.subspec "Video" do |ss|
+     ss.source_files  = "ios/Video/**/*.{h,m,swift}"

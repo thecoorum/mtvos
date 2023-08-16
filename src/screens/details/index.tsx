@@ -4,6 +4,7 @@ import {View, StyleSheet} from 'react-native';
 
 // Libraries
 import {createWormhole} from 'react-native-wormhole';
+import {useRoute} from '@react-navigation/native';
 import localhost from 'react-native-localhost';
 
 const {Wormhole} = createWormhole({
@@ -11,12 +12,15 @@ const {Wormhole} = createWormhole({
     require: (moduleId: string) => {
       console.log('require', moduleId);
 
-      if (moduleId === 'react') {
-        return require('react');
-      } else if (moduleId === 'react-native') {
-        return require('react-native');
-      } else if (moduleId === 'react-native-video') {
-        return require('react-native-video');
+      switch (moduleId) {
+        case 'react':
+          return require('react');
+        case 'react-native':
+          return require('react-native');
+        case 'react-native-video':
+          return require('react-native-video');
+        case '@babel/runtime/helpers/interopRequireDefault':
+          return require('@babel/runtime/helpers/interopRequireDefault');
       }
     },
   },
@@ -24,12 +28,16 @@ const {Wormhole} = createWormhole({
 });
 
 const Details = () => {
+  const {params} = useRoute();
+
   return (
     <View style={styles.container}>
       <Wormhole
         source={{
-          uri: `https://gist.githubusercontent.com/thecoorum/e957c4035c7df153523d71d46720d9a4/raw/34cbe65c39840b7cfba2841c716bb4dc865146f5/video.js`,
+          uri: `http://${localhost}:3000/wormhole/test.tsx`,
+          // uri: 'https://cdn.jsdelivr.net/gh/thecoorum/mtvos/wormhole.js',
         }}
+        video={params.video}
       />
     </View>
   );

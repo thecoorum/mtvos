@@ -34,8 +34,8 @@ const Details = () => {
     <View style={styles.container}>
       <Wormhole
         source={{
-          uri: `http://${localhost}:3000/wormhole/test.tsx`,
-          // uri: 'https://cdn.jsdelivr.net/gh/thecoorum/mtvos/wormhole.js',
+          // uri: `http://${localhost}:3000/wormhole/test.tsx`,
+          uri: 'https://cdn.jsdelivr.net/gh/thecoorum/mtvos/wormhole-3.js',
         }}
         video={params.video}
       />

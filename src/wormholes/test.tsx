@@ -5,7 +5,8 @@ import Video from 'react-native-video';
 
 const {width, height} = Dimensions.get('window');
 
-const Wormhole = ({video: uri}: {video: string}) => {
+const Wormhole = ({video: uri}) => {
+  console.log('uri', uri);
   return (
     <View style={styles.container}>
       <Video
